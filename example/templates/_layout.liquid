@@ -1,9 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" hidden>
+<html lang="en">
 
 <head>
     <title>Feather Example</title>
-    <script type="module" src="https://cdn.skypack.dev/twind/shim"></script>
+
+    <!-- 
+        Evaluate Tailwind CSS classes.
+        cf. https://github.com/tw-in-js/twind/discussions/161#discussioncomment-535632
+    -->
+    <script type="text/javascript" crossorigin="anonymous" src="https://unpkg.com/twind@0.16.9/twind.umd.js"> </script>
+    <script type="text/javascript" crossorigin="anonymous"
+        src="https://unpkg.com/twind@0.16.9/observe/observe.umd.js"> </script>
+    <script type="text/javascript">
+        twindObserve.observe(document.documentElement)
+    </script>
+    <!-- End of Twind script -->
 </head>
 
 <body>
