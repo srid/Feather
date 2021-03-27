@@ -3,3 +3,5 @@ obj
 bin
 .fake
 .vs
+example/output/*
+!example/output/.gitkeep
