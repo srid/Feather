@@ -24,3 +24,21 @@ The first priority is to get a non-pipeline based (i.e one-off) static site gene
 - **i18n**: The generated websites should support multiple languages. The "content" would thus be specified as input for the templates, rathar than being hardcoded in the HTML tags. This would allow us to specify translated versions with their own routes (eg: `/en/slug1` vs `/fr/slug1`).
 - **client-side search**: If, as detailed above, "content" is treated as *data* rather than *markup*, we can use [Elasticlunr.js](http://elasticlunr.com/) to provide a client-side search of these data documents.
 - **tool compilation**: For eg, to build CSS. The initial milestones will have support for [Tailwind](https://tailwindcss.com/) CSS styling, albeit using [twind/shim](https://twind.dev/docs/handbook/getting-started/using-the-shim.html) to (lazily) begin with.
+
+---
+
+## Hacking
+
+```shell
+# Terminal 1
+dotnet run -p .\src\Feather.CLI\ -- -w -C example
+
+# Terminal 2
+LiveReloadServer.exe .\example\output\
+```
+
+You can use `dotnet watch` to recompile and restart the tool on source change, but there is a bug with FAKE watcher here, because it won't reload on .liquid file changes. This is not an issue with `dotnet run` though.
+
+```
+dotnet watch -p .\src\Feather.CLI\ run -- -w -C ../../example
+```

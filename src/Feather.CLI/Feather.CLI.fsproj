@@ -13,4 +13,9 @@
     <ProjectReference Include="..\Feather.Build\Feather.Build.fsproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="Fake.IO.FileSystem" Version="5.20.3" />
+  </ItemGroup>
+
 </Project>

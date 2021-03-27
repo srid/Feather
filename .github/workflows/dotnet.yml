@@ -24,7 +24,7 @@ jobs:
     - name: Generate example site
       run: | 
         cd ./src/Feather.CLI 
-        dotnet run 
+        dotnet run -p ./src/Feather.CLI -- -C ./example
     - name: Deploy to gh-pages 🚀
       uses: peaceiris/actions-gh-pages@v3
       with:
