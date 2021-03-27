@@ -19,10 +19,17 @@
 
 <body>
     <div class="container mx-auto">
-        <header class="bg-purple-100 py-4 pl-4 mb-4 border-4">Feather Example</header>
+        <header 
+            class="bg-purple-100 py-4 pl-4 mt-2 mb-4 border-4 border-purple-700 font-semibold text-3xl text-center"
+            >Feather Example</header>
         <div class="border-2 p-4">
             {% block content %}{% endblock %}
         </div>
+        <footer
+            class="pt-2 mt-2 text-gray-300 text-center"
+        >
+            <a target=_blank href="https://github.com/srid/Feather">Powered by Feather</a>
+        </footer>
     </div>
 </body>
 

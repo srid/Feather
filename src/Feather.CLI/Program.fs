@@ -15,10 +15,10 @@ type Options = {
 }
 
 let generateOnce path =
-    let mount = Template.FileSystem.readFolderOfMount $"{path}/templates"
+    let mount = Template.FileSystem.readFolderOfMount <| Path.Join(path, "templates") 
     Template.init mount
     let html = Template.dotLiquid mount "index" null
-    let htmlPath = $"{path}/output/index.html"
+    let htmlPath = Path.Join(path, "output", "index.html")
     printfn $"W {htmlPath}"
     File.WriteAllText(htmlPath,html)
 
@@ -31,9 +31,15 @@ let main argv =
         generateOnce options.path
         if options.watch then
             printfn "Watching for template changes"
-            use _watcher = !! $"**/*.*" |> Fake.IO.ChangeWatcher.run (fun changes -> 
+            // Limit what we want to watch (.liquid files), because we don't
+            // want to accidentally 'watching' output files.
+            let filesToWatch = Path.Join(options.path, "templates", "*.liquid")
+            use _watcher = !! filesToWatch |> Fake.IO.ChangeWatcher.run (fun changes -> 
                 for change in changes do 
-                    printfn $"! {change}"
+                    printfn $"! {change.Name}"
+                // FIXME: This delay exists to workaround an IOException during
+                // reading of a .liquid (because Fake watcher presumably locks it)
+                Thread.Sleep(100)
                 generateOnce options.path
             )
             Thread.Sleep(Timeout.Infinite)
