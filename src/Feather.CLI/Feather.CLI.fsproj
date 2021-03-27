@@ -9,4 +9,8 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Feather.Build\Feather.Build.fsproj" />
+  </ItemGroup>
+
 </Project>
