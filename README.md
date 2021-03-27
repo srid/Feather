@@ -1,9 +1,9 @@
 # Feather
 
-Feather is a work-in-progress **static site generator** with customizable pipeline and live-reload. It is currently in research & prototype phase, to explore the possibility of two related but very different use-cases:
+Feather is a work-in-progress **static site generator & previewer** with customizable pipeline and live-reload. It is currently in research & prototype phase, to explore the possibility of two related but very different use-cases:
 
 1. Generate simple static sites
-2. Generate complex static sites with data built from pipelines (eg: [Neuron Zettelkasten](https://neuron.zettel.page/))
+2. Generate complex static sites built off varied data that change over time (eg: Markdown files, as done by [Neuron Zettelkasten](https://neuron.zettel.page/))
 
 Feather, taking inspiration from the likes of [Sveltekit](https://kit.svelte.dev/) (which uses [Vite](https://vitejs.dev/)), also aims to provide a live-reload approach to instantly previewing the site while its source files are being modified, but without the "taint" of bringing in JavaScript. 
 
@@ -13,7 +13,7 @@ Feather, taking inspiration from the likes of [Sveltekit](https://kit.svelte.dev
 
 For **HTML templating** we choose Shopify's [Liquid](https://shopify.github.io/liquid/) language (using [DotLiquid](http://dotliquidmarkup.org/)).
 
-For building **reactive pipelines**, we choose [Rx](https://dotnetfoundation.org/projects/reactive-extensions) along with possibly [Dynamic Data](https://dynamic-data.org/).
+For building **reactive pipelines** we choose [Rx](https://dotnetfoundation.org/projects/reactive-extensions) along with possibly [Dynamic Data](https://github.com/reactivemarbles/DynamicData).
 
 ## Milestones
 
@@ -42,3 +42,9 @@ You can use `dotnet watch` to recompile and restart the tool on source change, b
 ```
 dotnet watch -p .\src\Feather.CLI\ run -- -w -C ../../example
 ```
+
+## Status
+
+- [x] One-off generation of `.html` from `.liquid` files (see `./example` folder)
+- [x] Primitive file watcher that regenerates on source change
+- [x] Tailwind CSS support in .liquid files (via `twind/shim`)
