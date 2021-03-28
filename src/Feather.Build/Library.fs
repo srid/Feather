@@ -4,16 +4,29 @@ open DotLiquid
 open DotLiquid.FileSystems
 open System.IO
 open Fluid
-open System.Text.Json
-open Fluid.Values
+open Fluid.MvcViewEngine
 open Newtonsoft.Json.Linq
+open Microsoft.Extensions.FileProviders
+open Microsoft.Extensions.Hosting
+open Microsoft.AspNetCore.Hosting
 
 module Play = 
     // TODO: 
     // - Layout demo
     // - Replace DotLiquid
+    (*
+    type StaticWebHostEnv(path: string, fileProvider: IFileProvider) = 
+        interface IWebHostEnvironment with
+            member val ApplicationName = "StaticWebHost" with get, set
+            member val WebRootPath = path with get, set
+            member val WebRootFileProvider = fileProvider with get, set
+            member val EnvironmentName = Environments.Production with get, set
+            member val ContentRootPath = path with get, set
+            member val ContentRootFileProvider = fileProvider with get, set
+    *)
+
     type R = JToken
-    let demo = 
+    let demo path = 
         // Build opts
         let opts = TemplateOptions()
         let lookup (src: JObject) (name: string) : R = src.GetValue(name)
@@ -30,21 +43,28 @@ module Play =
             | :? JValue as v ->
                 v.Value
             | _ -> null)
+        let physicalFs = PhysicalFileProvider(path)
+        opts.FileProvider <- physicalFs
  
         let json = "{\"Name\": \"Srid\", \"Age\": 36, \"Favs\": [7, 4, 42]}"
         let template = "{{ Name }} is {{ Age }} years old. His favs are {% for fav in Favs %} {{fav}}, {% else %} none! {% endfor %}"
 
-        let parser = FluidParser()
-        let success, tmpl = parser.TryParse(template)
+        let fileInfo = opts.FileProvider.GetFileInfo("index.liquid")
+        let s = File.ReadAllText(fileInfo.PhysicalPath)
+
+        // let hostingEnv = StaticWebHostEnv(path, physicalFs)
+        // let rendering = FluidRendering(null, null, hostingEnv)
+        let parser = FluidViewParser()
+        let success, tmpl, error = parser.TryParse(s)
         match success with 
-        | false -> printfn "fail"
+        | false -> printfn $"fail: {error}"
         | true -> 
             let value = JObject.Parse(json)
             let ctx = TemplateContext(value, opts)
+            ctx.AmbientValues.Add("ViewPath", path) // XXX huh, this not using IFileProvider?
             let out = tmpl.Render(ctx)
             printfn $"{out}"
         printfn "Done."
-        0
 
 module Template =
 

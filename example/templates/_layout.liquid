@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Feather Example</title>
+    <title>{% rendersection title %} - Feather Example</title>
 
     <!-- 
         Evaluate Tailwind CSS classes.
@@ -23,7 +23,7 @@
             class="bg-purple-100 py-4 pl-4 mt-2 mb-4 border-4 border-purple-700 font-semibold text-3xl text-center"
             >Feather Example</header>
         <div class="border-2 p-4">
-            {% block content %}{% endblock %}
+            {% renderbody %}
         </div>
         <footer
             class="pt-2 mt-2 text-gray-300 text-center"

@@ -1,5 +1,6 @@
-{% extends layout %}
-{% block content %}
-    <h1>Hello</h1>
-    <p>Welcome to Feather</p>
-{% endblock %}
+{% layout '_layout.liquid' %}
+
+<h1>Hello</h1>
+<p>Welcome to Feather, {{ Name }}</p>
+
+{% section title %}Index{% endsection}

@@ -25,11 +25,12 @@ let generateOnce path =
 [<EntryPoint>]
 let main argv =
     let result = Parser.Default.ParseArguments<Options>(argv)
-    Play.demo |> ignore
     match result with 
     | :? Parsed<Options> as parsed -> 
         let options = parsed.Value
-        generateOnce options.path
+        Path.Join(Path.GetFullPath options.path, "templates")
+        |> Play.demo
+        // generateOnce options.path
         if options.watch then
             printfn "Watching for template changes"
             // Limit what we want to watch (.liquid files), because we don't
