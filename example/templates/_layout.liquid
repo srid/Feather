@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Feather Example</title>
+    <title>{% block title %}{% endblock %}</title>
 
     <!-- 
         Evaluate Tailwind CSS classes.
@@ -28,7 +28,7 @@
         <footer
             class="pt-2 mt-2 text-gray-300 text-center"
         >
-            <a target=_blank href="https://github.com/srid/Feather">Powered by Feather</a>
+            <a target=_blank href="https://github.com/srid/Feather">Powered by Feather</a> by {{ siteAuthor }}
         </footer>
     </div>
 </body>

@@ -14,10 +14,25 @@ type Options = {
     path : string
 }
 
+/// Static-site's user specific data.
+/// 
+/// TODO: For generic user sites, we may want to allow arbitrary JSON, rather 
+/// than defining a F# type (whose type-safety for fine for custom-built sites).
+/// But the story of HTML template engines in dotnet is lacking in regards to
+/// support aritrary JSON well *in addition to* the other features (virtual fs,
+/// etc.) we rely. So may very well end up compromising on the JSON support for
+/// now, thus requiring custom sites to use Feature as a library to begin with.
+/// Things can always change in the future.
+type AppData =
+    { siteTitle: string 
+      siteAuthor: string
+    }
+
 let generateOnce path =
     let mount = Template.FileSystem.readFolderOfMount <| Path.Join(path, "templates") 
     Template.init mount
-    let html = Template.dotLiquid mount "index" null
+    let appData = { siteTitle = "Feather Example"; siteAuthor = "Srid" }
+    let html = Template.dotLiquid mount "index" appData
     let htmlPath = Path.Join(path, "output", "index.html")
     printfn $"W {htmlPath}"
     File.WriteAllText(htmlPath,html)
