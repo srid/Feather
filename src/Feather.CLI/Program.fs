@@ -25,6 +25,7 @@ let generateOnce path =
 [<EntryPoint>]
 let main argv =
     let result = Parser.Default.ParseArguments<Options>(argv)
+    Play.demo |> ignore
     match result with 
     | :? Parsed<Options> as parsed -> 
         let options = parsed.Value

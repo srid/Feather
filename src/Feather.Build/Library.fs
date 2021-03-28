@@ -3,6 +3,48 @@
 open DotLiquid
 open DotLiquid.FileSystems
 open System.IO
+open Fluid
+open System.Text.Json
+open Fluid.Values
+open Newtonsoft.Json.Linq
+
+module Play = 
+    // TODO: 
+    // - Layout demo
+    // - Replace DotLiquid
+    type R = JToken
+    let demo = 
+        // Build opts
+        let opts = TemplateOptions()
+        let lookup (src: JObject) (name: string) : R = src.GetValue(name)
+        let getIt : System.Func<JObject, string, R> = 
+            System.Func<JObject, string, R>(lookup)
+        opts.MemberAccessStrategy.Register<JObject, R>(getIt)
+        opts.ValueConverters.Add(fun x -> 
+            match x with 
+            | :? JObject as o ->
+                x
+            | _ -> null)
+        opts.ValueConverters.Add(fun x -> 
+            match x with 
+            | :? JValue as v ->
+                v.Value
+            | _ -> null)
+ 
+        let json = "{\"Name\": \"Srid\", \"Age\": 36, \"Favs\": [7, 4, 42]}"
+        let template = "{{ Name }} is {{ Age }} years old. His favs are {% for fav in Favs %} {{fav}}, {% else %} none! {% endfor %}"
+
+        let parser = FluidParser()
+        let success, tmpl = parser.TryParse(template)
+        match success with 
+        | false -> printfn "fail"
+        | true -> 
+            let value = JObject.Parse(json)
+            let ctx = TemplateContext(value, opts)
+            let out = tmpl.Render(ctx)
+            printfn $"{out}"
+        printfn "Done."
+        0
 
 module Template =
 
@@ -57,13 +99,13 @@ module Template =
 
     /// Render the template using the given model, and return the final HTML string
     /// TODO: Domain types?
-    let dotLiquid (mount: FileSystem.Mount) (templateName: string) (model: obj) : string =
+    let dotLiquid (mount: FileSystem.Mount) (templateName: string) (model: Hash) : string =
         match FileSystem.lookupMount(mount, liquidFile templateName) with 
         | None -> "Not Found ({templateName})"
         | Some content -> 
             let tmpl = Template.Parse content 
             let html = 
                 model 
-                |> Hash.FromAnonymousObject
+                // |> Hash.FromAnonymousObject
                 |> tmpl.Render 
             html
