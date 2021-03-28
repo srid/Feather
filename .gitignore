@@ -5,3 +5,4 @@ bin
 .vs
 example/output/*
 !example/output/.gitkeep
+.idea

@@ -48,3 +48,7 @@ dotnet watch -p .\src\Feather.CLI\ run -- -w -C ../../example
 - [x] One-off generation of `.html` from `.liquid` files (see `./example` folder)
 - [x] Primitive file watcher that regenerates on source change
 - [x] Tailwind CSS support in .liquid files (via `twind/shim`)
+- [ ] Finalize on a HTML template library ([#1](https://github.com/srid/Feather/issues/1))
+- [ ] static/ files
+- [ ] Deploy something useful
+- [ ] Add a dev server with live-reload
