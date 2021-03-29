@@ -9,41 +9,12 @@ open Newtonsoft.Json.Linq
 open Microsoft.Extensions.FileProviders
 open System.Text
 
-module Play = 
+module Liquid = 
     // TODO: 
     // - Layout demo
     // - Replace DotLiquid
-    (*
-    type StaticWebHostEnv(path: string, fileProvider: IFileProvider) = 
-        interface IWebHostEnvironment with
-            member val ApplicationName = "StaticWebHost" with get, set
-            member val WebRootPath = path with get, set
-            member val WebRootFileProvider = fileProvider with get, set
-            member val EnvironmentName = Environments.Production with get, set
-            member val ContentRootPath = path with get, set
-            member val ContentRootFileProvider = fileProvider with get, set
-    *)
 
-    type R = JToken
-
-    let enableJson(vopts: FluidViewEngineOptions) =
-        let lookup (src: JObject) (name: string) : R = src.GetValue(name)
-        let getIt : System.Func<JObject, string, R> = 
-            System.Func<JObject, string, R>(lookup)
-        vopts.TemplateOptions.MemberAccessStrategy.Register<JObject, R>(getIt)
-        vopts.TemplateOptions.ValueConverters.Add(fun x -> 
-            match x with 
-            | :? JObject as o ->
-                x
-            | _ -> null)
-        vopts.TemplateOptions.ValueConverters.Add(fun x -> 
-            match x with 
-            | :? JValue as v ->
-                v.Value
-            | _ -> null)
-        // opts.FileProvider <- FileProviderMapper(physicalFs, "")
-
-    type LiquidEngine(path: string) =
+    type Engine(path: string) =
         // Build opts
         let physicalFs = new PhysicalFileProvider(path)
         let vopts = FluidViewEngineOptions()
@@ -53,8 +24,8 @@ module Play =
             vopts.IncludesFileProvider <- physicalFs
             vopts.TemplateOptions.MemberAccessStrategy <- UnsafeMemberAccessStrategy.Instance
             vopts.ViewLocationFormats.Add($"{{0}}{Constants.ViewExtension}")
-
         let renderer = FluidViewRenderer(vopts)
+
         member this.Render(name: string, value: obj) : string =
             printfn $"{value}"
             use x = new StringWriter()
@@ -67,6 +38,27 @@ module Play =
             printfn $"{out}"
             printfn "Done."
             out
+
+    module Json =
+        type R = JToken
+
+        let enableJson(vopts: FluidViewEngineOptions) =
+            let lookup (src: JObject) (name: string) : R = src.GetValue(name)
+            let getIt : System.Func<JObject, string, R> = 
+                System.Func<JObject, string, R>(lookup)
+            vopts.TemplateOptions.MemberAccessStrategy.Register<JObject, R>(getIt)
+            vopts.TemplateOptions.ValueConverters.Add(fun x -> 
+                match x with 
+                | :? JObject as o ->
+                    x
+                | _ -> null)
+            vopts.TemplateOptions.ValueConverters.Add(fun x -> 
+                match x with 
+                | :? JValue as v ->
+                    v.Value
+                | _ -> null)
+            // opts.FileProvider <- FileProviderMapper(physicalFs, "")
+
 module Template =
 
     /// HTML templates presume a "filesystem" on which template files are stored.

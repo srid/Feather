@@ -29,7 +29,7 @@ type AppData =
       siteAuthor: string
     }
 
-let generateOnce (engine: Play.LiquidEngine, output: string) =
+let generateOnce (engine: Liquid.Engine, output: string) =
     let appData = { siteTitle = "Feather Example"; siteAuthor = "Srid" }
     // JSON support broken, but I won't need it anyway?
     // let json : JObject = JObject.Parse "{\"Name\": \"Srid\", \"Age\": 36, \"Favs\": [7, 4, 42]}"
@@ -48,7 +48,7 @@ let main argv =
         let options = parsed.Value
         let tmplPath = Path.Join(Path.GetFullPath options.path, "templates")
         let outputPath = Path.Join(Path.GetFullPath options.path, "output")
-        generateOnce(Play.LiquidEngine tmplPath , outputPath)
+        generateOnce(Liquid.Engine tmplPath , outputPath)
         if options.watch then
             printfn "Watching for template changes"
             // Limit what we want to watch (.liquid files), because we don't
@@ -60,7 +60,7 @@ let main argv =
                 // FIXME: This delay exists to workaround an IOException during
                 // reading of a .liquid (because Fake watcher presumably locks it)
                 Thread.Sleep(100)
-                generateOnce(Play.LiquidEngine tmplPath, outputPath)
+                generateOnce(Liquid.Engine tmplPath, outputPath)
             )
             Thread.Sleep(Timeout.Infinite)
         0 // return an integer exit code
