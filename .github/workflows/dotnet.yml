@@ -2,13 +2,14 @@ name: .NET
 
 on:
   push:
-    branches: [ master ]
+  pull_request:
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      MAINLINE: refs/heads/master
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -16,15 +17,18 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: | 
+        dotnet tool restore
+        dotnet paket restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build Feather.sln
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Generate example site
       run: | 
         dotnet run -p ./src/Feather.CLI -- -C ./example
     - name: Deploy to gh-pages 🚀
+      if: ${{ github.ref == env.MAINLINE }}
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
