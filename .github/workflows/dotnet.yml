@@ -21,7 +21,7 @@ jobs:
         dotnet tool restore
         dotnet paket restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build Feather.sln --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Generate example site
