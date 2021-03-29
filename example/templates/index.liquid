@@ -1,6 +1,14 @@
 {% layout '_layout.liquid' %}
 
 <h1>Hello</h1>
-<p>Welcome to Feather, {{ Name }}</p>
+<p>{{ UserData }}</p>
+<p>Welcome to Feather, {{ UserData.Name }}</p>
 
-{% section title %}Index{% endsection}
+<p>You are {{ UserData.Age }} years old.</p>
+
+{{ Extra }}
+<p> And foo is {{ UserData.Foo }}, {{ siteTitle }}, and extra: {{ Extra.More }} </p>
+
+{% section title %}
+Index
+{% endsection}

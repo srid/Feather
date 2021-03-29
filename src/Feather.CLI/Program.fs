@@ -5,6 +5,7 @@ open Feather.Build
 open System.Threading
 open Fake.IO.Globbing.Operators
 open CommandLine
+open Newtonsoft.Json.Linq
 
 type Options = {
     [<Option('w', "watch", Default = false, HelpText = "Watch for template changes")>]
@@ -28,12 +29,14 @@ type AppData =
       siteAuthor: string
     }
 
-let generateOnce path =
-    let mount = Template.FileSystem.readFolderOfMount <| Path.Join(path, "templates") 
-    Template.init mount
+let generateOnce (engine: Play.LiquidEngine, output: string) =
     let appData = { siteTitle = "Feather Example"; siteAuthor = "Srid" }
-    let html = Template.dotLiquid mount "index" null // appData
-    let htmlPath = Path.Join(path, "output", "index.html")
+    // JSON support broken, but I won't need it anyway?
+    // let json : JObject = JObject.Parse "{\"Name\": \"Srid\", \"Age\": 36, \"Favs\": [7, 4, 42]}"
+    // let userData = {| Name = "Srid"; Age = 36 |}
+    // let value = {| appData with Foo = "bar"; UserData = userData |}
+    let html = engine.Render("index.liquid", {| appData with Extra = {| More = "more..!" |} |})
+    let htmlPath = Path.Join(output, "index.html")
     printfn $"W {htmlPath}"
     File.WriteAllText(htmlPath,html)
 
@@ -43,9 +46,9 @@ let main argv =
     match result with 
     | :? Parsed<Options> as parsed -> 
         let options = parsed.Value
-        Path.Join(Path.GetFullPath options.path, "templates")
-        |> Play.demo
-        // generateOnce options.path
+        let tmplPath = Path.Join(Path.GetFullPath options.path, "templates")
+        let outputPath = Path.Join(Path.GetFullPath options.path, "output")
+        generateOnce(Play.LiquidEngine tmplPath , outputPath)
         if options.watch then
             printfn "Watching for template changes"
             // Limit what we want to watch (.liquid files), because we don't
@@ -57,7 +60,7 @@ let main argv =
                 // FIXME: This delay exists to workaround an IOException during
                 // reading of a .liquid (because Fake watcher presumably locks it)
                 Thread.Sleep(100)
-                generateOnce options.path
+                generateOnce(Play.LiquidEngine tmplPath, outputPath)
             )
             Thread.Sleep(Timeout.Infinite)
         0 // return an integer exit code

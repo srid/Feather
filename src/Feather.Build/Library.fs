@@ -7,6 +7,7 @@ open Fluid
 open Fluid.ViewEngine
 open Newtonsoft.Json.Linq
 open Microsoft.Extensions.FileProviders
+open System.Text
 
 module Play = 
     // TODO: 
@@ -24,46 +25,46 @@ module Play =
     *)
 
     type R = JToken
-    let demo path = 
-        // Build opts
-        let opts = TemplateOptions()
+
+    let enableJson(vopts: FluidViewEngineOptions) =
         let lookup (src: JObject) (name: string) : R = src.GetValue(name)
         let getIt : System.Func<JObject, string, R> = 
             System.Func<JObject, string, R>(lookup)
-        opts.MemberAccessStrategy.Register<JObject, R>(getIt)
-        opts.ValueConverters.Add(fun x -> 
+        vopts.TemplateOptions.MemberAccessStrategy.Register<JObject, R>(getIt)
+        vopts.TemplateOptions.ValueConverters.Add(fun x -> 
             match x with 
             | :? JObject as o ->
                 x
             | _ -> null)
-        opts.ValueConverters.Add(fun x -> 
+        vopts.TemplateOptions.ValueConverters.Add(fun x -> 
             match x with 
             | :? JValue as v ->
                 v.Value
             | _ -> null)
-        let physicalFs = PhysicalFileProvider(path)
-        opts.FileProvider <- physicalFs
- 
-        let json = "{\"Name\": \"Srid\", \"Age\": 36, \"Favs\": [7, 4, 42]}"
-        let template = "{{ Name }} is {{ Age }} years old. His favs are {% for fav in Favs %} {{fav}}, {% else %} none! {% endfor %}"
+        // opts.FileProvider <- FileProviderMapper(physicalFs, "")
 
-        let fileInfo = opts.FileProvider.GetFileInfo("index.liquid")
-        let s = File.ReadAllText(fileInfo.PhysicalPath)
+    type LiquidEngine(path: string) =
+        // Build opts
+        let physicalFs = new PhysicalFileProvider(path)
+        let vopts = FluidViewEngineOptions()
+        do 
+            vopts.Parser <- FluidViewParser()
+            vopts.ViewsFileProvider <- physicalFs
+            vopts.IncludesFileProvider <- physicalFs
 
-        // let hostingEnv = StaticWebHostEnv(path, physicalFs)
-        // let rendering = FluidRendering(null, null, hostingEnv)
-        let parser = FluidViewParser()
-        let success, tmpl, error = parser.TryParse(s)
-        match success with 
-        | false -> printfn $"fail: {error}"
-        | true -> 
-            let value = JObject.Parse(json)
-            let ctx = TemplateContext(value, opts)
-            ctx.AmbientValues.Add("ViewPath", path) // XXX huh, this not using IFileProvider?
-            let out = tmpl.Render(ctx)
+        let renderer = FluidViewRenderer(vopts)
+        member this.Render(name: string, value: obj) : string =
+            printfn $"{value}"
+            use x = new StringWriter()
+            async {
+                renderer.RenderViewAsync(x, name, value) 
+                |> Async.AwaitTask
+                |> ignore
+            } |> Async.RunSynchronously
+            let out = x.ToString()
             printfn $"{out}"
-        printfn "Done."
-
+            printfn "Done."
+            out
 module Template =
 
     /// HTML templates presume a "filesystem" on which template files are stored.
