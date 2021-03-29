@@ -51,6 +51,8 @@ module Play =
             vopts.Parser <- FluidViewParser()
             vopts.ViewsFileProvider <- physicalFs
             vopts.IncludesFileProvider <- physicalFs
+            vopts.TemplateOptions.MemberAccessStrategy <- UnsafeMemberAccessStrategy.Instance
+            vopts.ViewLocationFormats.Add($"{{0}}{Constants.ViewExtension}")
 
         let renderer = FluidViewRenderer(vopts)
         member this.Render(name: string, value: obj) : string =

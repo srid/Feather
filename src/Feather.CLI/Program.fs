@@ -33,9 +33,9 @@ let generateOnce (engine: Play.LiquidEngine, output: string) =
     let appData = { siteTitle = "Feather Example"; siteAuthor = "Srid" }
     // JSON support broken, but I won't need it anyway?
     // let json : JObject = JObject.Parse "{\"Name\": \"Srid\", \"Age\": 36, \"Favs\": [7, 4, 42]}"
-    // let userData = {| Name = "Srid"; Age = 36 |}
+    let userData = {| Name = "Srid"; Age = 36 |}
     // let value = {| appData with Foo = "bar"; UserData = userData |}
-    let html = engine.Render("index.liquid", {| appData with Extra = {| More = "more..!" |} |})
+    let html = engine.Render("index.liquid", {| appData with UserData = userData; Extra = {| More = "more..!" |} |})
     let htmlPath = Path.Join(output, "index.html")
     printfn $"W {htmlPath}"
     File.WriteAllText(htmlPath,html)
