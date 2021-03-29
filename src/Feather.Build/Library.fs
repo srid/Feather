@@ -4,11 +4,9 @@ open DotLiquid
 open DotLiquid.FileSystems
 open System.IO
 open Fluid
-open Fluid.MvcViewEngine
+open Fluid.ViewEngine
 open Newtonsoft.Json.Linq
 open Microsoft.Extensions.FileProviders
-open Microsoft.Extensions.Hosting
-open Microsoft.AspNetCore.Hosting
 
 module Play = 
     // TODO: 

@@ -1,6 +1,6 @@
 DotLiquid
 FSharp.Core
 Fluid.Core
-Fluid.MvcViewEngine
+Fluid.ViewEngine
 Microsoft.Extensions.FileProviders.Physical
 Newtonsoft.Json
