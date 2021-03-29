@@ -1,0 +1,8 @@
+source https://api.nuget.org/v3/index.json
+
+storage: none
+framework: net5.0
+nuget CommandLineParser 2.8.0
+nuget DotLiquid 2.1.405
+nuget Fake.IO.FileSystem 5.20.3
+nuget FSharp.Core

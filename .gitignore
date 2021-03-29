@@ -6,3 +6,7 @@ bin
 example/output/*
 !example/output/.gitkeep
 .idea
+
+#Paket
+.paket/
+paket-files/

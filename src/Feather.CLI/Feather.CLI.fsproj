@@ -1,21 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="Program.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Feather.Build\Feather.Build.fsproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="Fake.IO.FileSystem" Version="5.20.3" />
-  </ItemGroup>
-
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
