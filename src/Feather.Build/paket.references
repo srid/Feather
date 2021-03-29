@@ -1,2 +1,6 @@
 DotLiquid
 FSharp.Core
+Fluid.Core
+Fluid.MvcViewEngine
+Microsoft.Extensions.FileProviders.Physical
+Newtonsoft.Json
