@@ -2,13 +2,12 @@
 
 <h1>Hello</h1>
 <p>{{ UserData }}</p>
-<p>Welcome to Feather, {{ UserData.Name }}</p>
+<p>Welcome to Feather, {{ UserData.Name }}!</p>
 
 <p>You are {{ UserData.Age }} years old.</p>
 
 {{ Extra }}
-<p> siteTitle {{ siteTitle }}, and extra: {{ Extra.More }} </p>
+{{Json}}
+<p> json {{ Json.Name }}, and extra: {{ Extra.More }} </p>
 
-{% section title %}
-Index
-{% endsection}
+{% section title %} Index {% endsection %}
