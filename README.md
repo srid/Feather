@@ -68,6 +68,13 @@ echo Hello world > templates/index.liquid
 $FEATHER -w .
 ```
 
+**Fastest way** to get feather running is to use the released version from NuGet (which may lag behind):
+
+```
+# Copy the .fsx script to your site dir as appropriate. To test,
+./example/example.fsx -C example/
+```
+
 ## Status
 
 - [x] One-off generation of `.html` from `.liquid` files (see `./example` folder)
