@@ -32,11 +32,14 @@ The first priority is to get a non-pipeline based (i.e one-off) static site gene
 ## Hacking
 
 ```shell
+dotnet tool install
+dotnet paket restore
+
 # Terminal 1
 dotnet run -p ./src/Feather.CLI -- -w -C example
 
 # Terminal 2
-LiveReloadServer.exe ./example/output
+dotnet LiveReloadServer ./example/output
 ```
 
 You can use `dotnet watch` to recompile and restart the tool on source change, but there is a bug with FAKE watcher here, because it won't reload on .liquid file changes. This is not an issue with `dotnet run` though.
