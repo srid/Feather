@@ -48,6 +48,25 @@ You can use `dotnet watch` to recompile and restart the tool on source change, b
 dotnet watch -p ./src/Feather.CLI run -- -w -C ../../example
 ```
 
+## Installing and use
+
+To build and install the release version,
+
+```
+dotnet build -c Release
+...
+dotnet tool install -g Feather --add-source ./src/Feather.CLI/nupkg/
+```
+
+The program `feather` should now be installed under `.dotnet/tools/` of your user home directory. Now you can use it on a static site template:
+
+```
+mkdir my-site && cd my-site
+mkdir templates output
+echo Hello world > templates/index.liquid
+feather
+```
+
 ## Status
 
 - [x] One-off generation of `.html` from `.liquid` files (see `./example` folder)
