@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Feather.Build</PackageId>
+    <Version>0.1.0-alpha</Version>
+    <Authors>Sridhar Ratnakumar</Authors>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Library.fs" />
