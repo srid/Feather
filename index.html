@@ -2,16 +2,21 @@
 <html lang="en">
 
 <head>
-    <title> Index - Feather Example </title>
+    <title> Index  - Feather Example</title>
 
     <!-- 
         Evaluate Tailwind CSS classes.
         cf. https://github.com/tw-in-js/twind/discussions/161#discussioncomment-535632
     -->
-    <script type="text/javascript" crossorigin="anonymous" src="https://unpkg.com/twind@0.16.9/twind.umd.js"> </script>
-    <script type="text/javascript" crossorigin="anonymous"
-        src="https://unpkg.com/twind@0.16.9/observe/observe.umd.js"> </script>
+    <script type="text/javascript" crossorigin="anonymous" src="https://cdn.jsdelivr.net/combine/npm/twind/twind.umd.min.js,npm/twind/observe/observe.umd.min.js"></script>
     <script type="text/javascript">
+        twind.setup(
+            { preflight: {
+                a: {
+                    "@apply": "underline hover:no-underline"
+                }
+            }}
+        )
         twindObserve.observe(document.documentElement)
     </script>
     <!-- End of Twind script -->
@@ -20,16 +25,21 @@
 <body>
     <div class="container mx-auto">
         <header 
-            class="bg-purple-100 py-4 pl-4 mt-2 mb-4 border-4 border-purple-700 font-semibold text-3xl text-center"
+            class="bg-purple-100 py-4 pl-4 mt-2 mb-4 border-2 border-purple-700 font-semibold text-3xl text-center"
             >Feather Example</header>
         <div class="border-2 p-4">
             
-    <h1>Hello</h1>
-    <p>Welcome to Feather</p>
+
+<h1 class="text-3xl">Hello</h1>
+<p>Welcome, <span class="font-bold">Srid</span>!</p>
+
+<p class="text-gray-700">You are 36 years old.</p>
+
+
 
         </div>
         <footer
-            class="pt-2 mt-2 text-gray-300 text-center"
+            class="pt-2 mt-2 text-gray-400 text-center"
         >
             <a target=_blank href="https://github.com/srid/Feather">Powered by Feather</a> by Srid
         </footer>
