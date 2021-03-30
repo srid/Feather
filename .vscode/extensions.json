@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "ms-dotnettools.csharp",
+        "ionide.ionide-fsharp",
+        "ionide.ionide-paket",
+        "sastan.twind-intellisense",
+        "sissel.shopify-liquid",
+        "bradlc.vscode-tailwindcss"
+    ]
+}
