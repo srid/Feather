@@ -7,4 +7,3 @@ nuget Fake.IO.FileSystem
 nuget Fluid.Core 2.0.0-beta-1013
 nuget Fluid.ViewEngine 2.0.0-beta-1013
 nuget Microsoft.Extensions.FileProviders.Physical
-nuget Newtonsoft.Json

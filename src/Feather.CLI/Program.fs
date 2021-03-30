@@ -5,7 +5,6 @@ open Feather.Build
 open System.Threading
 open Fake.IO.Globbing.Operators
 open CommandLine
-open Newtonsoft.Json.Linq
 
 type Options = {
     [<Option('w', "watch", Default = false, HelpText = "Watch for template changes")>]
@@ -18,7 +17,7 @@ type Options = {
 /// Static-site's user specific data.
 /// 
 /// TODO: For generic user sites, we may want to allow arbitrary JSON, rather 
-/// than defining a F# type (whose type-safety for fine for custom-built sites).
+/// than defining a F# type (whose type-safety is good for custom-built sites).
 /// But the story of HTML template engines in dotnet is lacking in regards to
 /// support aritrary JSON well *in addition to* the other features (virtual fs,
 /// etc.) we rely. So may very well end up compromising on the JSON support for
@@ -31,11 +30,8 @@ type AppData =
 
 let generateOnce (engine: Liquid.Engine, output: string) =
     let appData = { siteTitle = "Feather Example"; siteAuthor = "Srid" }
-    // JSON support broken, but I won't need it anyway?
-    let json : JObject = JObject.Parse "{\"Name\": \"Srid\", \"Age\": 36, \"Favs\": [7, 4, 42]}"
     let userData = {| Name = "Srid"; Age = 36 |}
-    // let value = {| appData with Foo = "bar"; UserData = userData |}
-    let html = engine.Render("index.liquid", {| appData with UserData = userData; Json = json; Extra = {| More = "more..!" |} |})
+    let html = engine.Render("index.liquid", {| appData with UserData = userData; Extra = {| More = "more..!" |} |})
     let htmlPath = Path.Join(output, "index.html")
     printfn $"W {htmlPath}"
     File.WriteAllText(htmlPath,html)

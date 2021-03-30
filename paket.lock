@@ -23,6 +23,5 @@ NUGET
       Microsoft.Extensions.Primitives (>= 5.0)
     Microsoft.Extensions.FileSystemGlobbing (5.0)
     Microsoft.Extensions.Primitives (5.0)
-    Newtonsoft.Json (13.0.1)
     Parlot (0.0.12)
     TimeZoneConverter (3.4)
