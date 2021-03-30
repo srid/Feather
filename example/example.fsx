@@ -1,5 +1,5 @@
 #!/usr/bin/env -S dotnet fsi
-#r "nuget: Feather.Build, 0.1.0-alpha"
+#r "nuget: Feather.Build, 0.1.0-alpha-1"
 
 type AppData =
     { siteTitle: string 
