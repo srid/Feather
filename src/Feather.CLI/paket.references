@@ -1,2 +1,3 @@
 CommandLineParser
-Fake.IO.FileSystem
+SJP.FsNotify
+FSharp.Control.Reactive

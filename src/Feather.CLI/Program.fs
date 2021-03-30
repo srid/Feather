@@ -3,8 +3,10 @@
 open System.IO
 open Feather.Build
 open System.Threading
-open Fake.IO.Globbing.Operators
 open CommandLine
+open Microsoft.Extensions.FileProviders
+open SJP.FsNotify
+open FSharp.Control.Reactive
 
 type Options = {
     [<Option('w', "watch", Default = false, HelpText = "Watch for template changes")>]
@@ -31,7 +33,7 @@ type AppData =
 let generateOnce (engine: Liquid.Engine, output: string) =
     let appData = { siteTitle = "Feather Example"; siteAuthor = "Srid" }
     let userData = {| Name = "Srid"; Age = 36 |}
-    let html = engine.Render("index.liquid", {| appData with UserData = userData; Extra = {| More = "more..!" |} |})
+    let html = engine.Render("index.liquid", {| appData with UserData = userData |})
     let htmlPath = Path.Join(output, "index.html")
     printfn $"W {htmlPath}"
     File.WriteAllText(htmlPath,html)
@@ -44,20 +46,19 @@ let main argv =
         let options = parsed.Value
         let tmplPath = Path.Join(Path.GetFullPath options.path, "templates")
         let outputPath = Path.Join(Path.GetFullPath options.path, "output")
-        generateOnce(Liquid.Engine tmplPath , outputPath)
+        let fp = new PhysicalFileProvider(tmplPath)
+        generateOnce(Liquid.Engine fp, outputPath)
         if options.watch then
-            printfn "Watching for template changes"
-            // Limit what we want to watch (.liquid files), because we don't
-            // want to be accidentally 'watching' output files.
-            let filesToWatch = Path.Join(options.path, "templates", "*.liquid")
-            use _watcher = !! filesToWatch |> Fake.IO.ChangeWatcher.run (fun changes -> 
-                for change in changes do 
-                    printfn $"! {change.Name}"
-                // FIXME: This delay exists to workaround an IOException during
-                // reading of a .liquid (because Fake watcher presumably locks it)
-                Thread.Sleep(100)
-                generateOnce(Liquid.Engine tmplPath, outputPath)
-            )
+            use w = new ObservableFileSystemWatcher(tmplPath)
+            w.Changed 
+            |> Observable.subscribe (fun evt -> 
+                match evt.ChangeType with 
+                | WatcherChangeTypes.Changed ->
+                    printfn "! %A" evt.Name
+                    generateOnce(Liquid.Engine fp, outputPath)
+                | _ -> ())
+            |> ignore
+            w.Start()
             Thread.Sleep(Timeout.Infinite)
         0 // return an integer exit code
     | _ ->
