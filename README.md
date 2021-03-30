@@ -42,7 +42,7 @@ dotnet run -p ./src/Feather.CLI -- -w -C example
 dotnet LiveReloadServer ./example/output
 ```
 
-You can use `dotnet watch` to recompile and restart the tool on source change, but there is a bug with FAKE watcher here, because it won't reload on .liquid file changes. This is not an issue with `dotnet run` though.
+You can use `dotnet watch` (instead of `dotnet run`) to recompile and restart the tool on source change.
 
 ```
 dotnet watch -p ./src/Feather.CLI run -- -w -C ../../example

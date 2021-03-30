@@ -55,17 +55,16 @@ let main argv =
             let fp = new PhysicalFileProvider(tmplPath)
             generateOnce(Liquid.Engine fp, outputPath)
             if options.watch then
-                use w = new ObservableFileSystemWatcher(tmplPath)
-                w.Changed 
-                |> Observable.subscribe (fun evt -> 
-                    match evt.ChangeType with 
-                    | WatcherChangeTypes.Changed ->
-                        printfn "! %A" evt.Name
-                        generateOnce(Liquid.Engine fp, outputPath)
-                    | _ -> ())
-                |> ignore
-                w.Start()
+                use watcher = new ObservableFileSystemWatcher(tmplPath)
+                let obs = 
+                    watcher.Changed 
+                    |> Observable.filter(fun evt -> evt.ChangeType = WatcherChangeTypes.Changed)
+                    |> Observable.subscribe (fun evt -> 
+                        printfn "! %s" evt.Name
+                        generateOnce(Liquid.Engine fp, outputPath))
+                watcher.Start()
                 Thread.Sleep(Timeout.Infinite)
+                obs.Dispose()
             0 // return an integer exit code
     | _ ->
         1
