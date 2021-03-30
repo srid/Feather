@@ -11,7 +11,7 @@ Feather, taking inspiration from the likes of [Sveltekit](https://kit.svelte.dev
 
 **F#** is used for a number of reasons, but primarily because the author is currently [invested in learning](https://srid.github.io/learning-fsharp/) it.
 
-For **HTML templating** we choose Shopify's [Liquid](https://shopify.github.io/liquid/) language (using [fluid](https://github.com/sebastienros/fluid)).
+For **HTML templating** we choose Shopify's [Liquid](https://shopify.dev/docs/themes/liquid/reference) language (using [fluid](https://github.com/sebastienros/fluid)).
 
 For building **reactive pipelines** we choose [Rx](https://dotnetfoundation.org/projects/reactive-extensions) along with possibly [Dynamic Data](https://github.com/reactivemarbles/DynamicData).
 
