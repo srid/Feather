@@ -4,11 +4,6 @@ NUGET
   remote: https://api.nuget.org/v3/index.json
     CommandLineParser (2.8)
     Enums.NET (4.0)
-    Fake.Core.String (5.20.3)
-      FSharp.Core (>= 4.7.2)
-    Fake.IO.FileSystem (5.20.3)
-      Fake.Core.String (>= 5.20.3)
-      FSharp.Core (>= 4.7.2)
     Fluid.Core (2.0.0-beta-1013)
       Microsoft.Extensions.FileProviders.Abstractions (>= 1.1.1)
       Parlot (>= 0.0.11)
