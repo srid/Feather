@@ -3,7 +3,6 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: net5.0
 nuget CommandLineParser
-nuget DotLiquid
 nuget Fake.IO.FileSystem
 nuget Fluid.Core 2.0.0-beta-1013
 nuget Fluid.ViewEngine 2.0.0-beta-1013
