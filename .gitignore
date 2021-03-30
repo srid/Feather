@@ -13,3 +13,5 @@ paket-files/
 
 #Nuget
 nupkg/
+
+out

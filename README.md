@@ -53,9 +53,10 @@ dotnet watch -p ./src/Feather.CLI run -- -w -C ../../example
 To build and install the release version,
 
 ```
-dotnet build -c Release
+cd ./src/Feather.CLI
+dotnet publish -c Release --self-contained -r linux-x64 -o out
+export FEATHER=$(pwd)/out/Feather.CLI
 ...
-dotnet tool install -g Feather --add-source ./src/Feather.CLI/nupkg/
 ```
 
 The program `feather` should now be installed under `.dotnet/tools/` of your user home directory. Now you can use it on a static site template:
@@ -64,7 +65,7 @@ The program `feather` should now be installed under `.dotnet/tools/` of your use
 mkdir my-site && cd my-site
 mkdir templates output
 echo Hello world > templates/index.liquid
-feather
+$FEATHER -w .
 ```
 
 ## Status
