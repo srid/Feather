@@ -2,3 +2,6 @@ FSharp.Core
 Fluid.Core
 Fluid.ViewEngine
 Microsoft.Extensions.FileProviders.Physical
+CommandLineParser
+SJP.FsNotify
+FSharp.Control.Reactive
