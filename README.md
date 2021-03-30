@@ -1,3 +1,5 @@
+<img width="10%" src="./feather-logo.svg">
+
 # Feather
 
 Feather is a work-in-progress **static site generator & previewer** with customizable pipeline and live-reload. It is currently in research & prototype phase, to explore the possibility of two related but very different use-cases:
