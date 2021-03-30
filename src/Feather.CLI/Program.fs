@@ -48,7 +48,7 @@ let main argv =
         if options.watch then
             printfn "Watching for template changes"
             // Limit what we want to watch (.liquid files), because we don't
-            // want to accidentally 'watching' output files.
+            // want to be accidentally 'watching' output files.
             let filesToWatch = Path.Join(options.path, "templates", "*.liquid")
             use _watcher = !! filesToWatch |> Fake.IO.ChangeWatcher.run (fun changes -> 
                 for change in changes do 

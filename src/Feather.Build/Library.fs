@@ -6,8 +6,6 @@ open Fluid.ViewEngine
 open Microsoft.Extensions.FileProviders
 
 module Liquid = 
-    // TODO: 
-    // - Cleanup
     type Engine(path: string) =
         // Build opts
         let physicalFs = new PhysicalFileProvider(path)
@@ -22,11 +20,8 @@ module Liquid =
 
         member this.Render(name: string, value: obj) : string =
             use x = new StringWriter()
-            async {
-                renderer.RenderViewAsync(x, name, value) 
-                |> Async.AwaitTask
-                |> ignore
-            } |> Async.RunSynchronously
+            renderer.RenderViewAsync(x, name, value) 
+            |> Async.AwaitTask |> Async.RunSynchronously
             let out = x.ToString()
             printfn $"{out}"
             out
