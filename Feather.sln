@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{376D1816-F69
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Feather.Build", "src\Feather.Build\Feather.Build.fsproj", "{8FDA5B9C-5D07-4D5F-A4D8-79DBF7B43452}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Feather.CLI", "src\Feather.CLI\Feather.CLI.fsproj", "{75605A16-5897-4146-B48C-491C98AB5448}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Feather", "src\Feather\Feather.fsproj", "{75605A16-5897-4146-B48C-491C98AB5448}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

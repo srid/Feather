@@ -36,7 +36,7 @@ dotnet tool install
 dotnet paket restore
 
 # Terminal 1
-dotnet run -p ./src/Feather.CLI -- -w -C example
+dotnet run -p ./src/Feather -- -w -C example
 
 # Terminal 2
 dotnet LiveReloadServer ./example/output
@@ -45,7 +45,7 @@ dotnet LiveReloadServer ./example/output
 You can use `dotnet watch` (instead of `dotnet run`) to recompile and restart the tool on source change.
 
 ```
-dotnet watch -p ./src/Feather.CLI run -- -w -C ../../example
+dotnet watch -p ./src/Feather run -- -w -C ../../example
 ```
 
 ## Installing and use
@@ -53,13 +53,13 @@ dotnet watch -p ./src/Feather.CLI run -- -w -C ../../example
 To build and install the release version,
 
 ```
-cd ./src/Feather.CLI
+cd ./src/Feather
 dotnet publish -c Release --self-contained -r linux-x64 -o out
-export FEATHER=$(pwd)/out/Feather.CLI
+export FEATHER=$(pwd)/out/Feather
 ...
 ```
 
-The program `feather` should now be installed under `.dotnet/tools/` of your user home directory. Now you can use it on a static site template:
+Use it,
 
 ```
 mkdir my-site && cd my-site
