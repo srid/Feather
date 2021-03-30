@@ -11,7 +11,7 @@ Feather, taking inspiration from the likes of [Sveltekit](https://kit.svelte.dev
 
 **F#** is used for a number of reasons, but primarily because the author is currently [invested in learning](https://srid.github.io/learning-fsharp/) it.
 
-For **HTML templating** we choose Shopify's [Liquid](https://shopify.github.io/liquid/) language (using [DotLiquid](http://dotliquidmarkup.org/)).
+For **HTML templating** we choose Shopify's [Liquid](https://shopify.github.io/liquid/) language (using [fluid](https://github.com/sebastienros/fluid)).
 
 For building **reactive pipelines** we choose [Rx](https://dotnetfoundation.org/projects/reactive-extensions) along with possibly [Dynamic Data](https://github.com/reactivemarbles/DynamicData).
 
@@ -31,16 +31,16 @@ The first priority is to get a non-pipeline based (i.e one-off) static site gene
 
 ```shell
 # Terminal 1
-dotnet run -p .\src\Feather.CLI\ -- -w -C example
+dotnet run -p ./src/Feather.CLI -- -w -C example
 
 # Terminal 2
-LiveReloadServer.exe .\example\output\
+LiveReloadServer.exe ./example/output
 ```
 
 You can use `dotnet watch` to recompile and restart the tool on source change, but there is a bug with FAKE watcher here, because it won't reload on .liquid file changes. This is not an issue with `dotnet run` though.
 
 ```
-dotnet watch -p .\src\Feather.CLI\ run -- -w -C ../../example
+dotnet watch -p ./src/Feather.CLI run -- -w -C ../../example
 ```
 
 ## Status
@@ -48,7 +48,7 @@ dotnet watch -p .\src\Feather.CLI\ run -- -w -C ../../example
 - [x] One-off generation of `.html` from `.liquid` files (see `./example` folder)
 - [x] Primitive file watcher that regenerates on source change
 - [x] Tailwind CSS support in .liquid files (via `twind/shim`)
-- [ ] Finalize on a HTML template library ([#1](https://github.com/srid/Feather/issues/1))
+- [x] Finalize on a HTML template library ([#1](https://github.com/srid/Feather/issues/1))
 - [ ] static/ files
 - [ ] Deploy something useful
 - [ ] Add a dev server with live-reload

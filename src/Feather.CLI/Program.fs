@@ -17,7 +17,7 @@ type Options = {
 /// Static-site's user specific data.
 /// 
 /// TODO: For generic user sites, we may want to allow arbitrary JSON, rather 
-/// than defining a F# type (whose type-safety for fine for custom-built sites).
+/// than defining a F# type (whose type-safety is good for custom-built sites).
 /// But the story of HTML template engines in dotnet is lacking in regards to
 /// support aritrary JSON well *in addition to* the other features (virtual fs,
 /// etc.) we rely. So may very well end up compromising on the JSON support for
@@ -28,12 +28,11 @@ type AppData =
       siteAuthor: string
     }
 
-let generateOnce path =
-    let mount = Template.FileSystem.readFolderOfMount <| Path.Join(path, "templates") 
-    Template.init mount
+let generateOnce (engine: Liquid.Engine, output: string) =
     let appData = { siteTitle = "Feather Example"; siteAuthor = "Srid" }
-    let html = Template.dotLiquid mount "index" appData
-    let htmlPath = Path.Join(path, "output", "index.html")
+    let userData = {| Name = "Srid"; Age = 36 |}
+    let html = engine.Render("index.liquid", {| appData with UserData = userData; Extra = {| More = "more..!" |} |})
+    let htmlPath = Path.Join(output, "index.html")
     printfn $"W {htmlPath}"
     File.WriteAllText(htmlPath,html)
 
@@ -43,11 +42,13 @@ let main argv =
     match result with 
     | :? Parsed<Options> as parsed -> 
         let options = parsed.Value
-        generateOnce options.path
+        let tmplPath = Path.Join(Path.GetFullPath options.path, "templates")
+        let outputPath = Path.Join(Path.GetFullPath options.path, "output")
+        generateOnce(Liquid.Engine tmplPath , outputPath)
         if options.watch then
             printfn "Watching for template changes"
             // Limit what we want to watch (.liquid files), because we don't
-            // want to accidentally 'watching' output files.
+            // want to be accidentally 'watching' output files.
             let filesToWatch = Path.Join(options.path, "templates", "*.liquid")
             use _watcher = !! filesToWatch |> Fake.IO.ChangeWatcher.run (fun changes -> 
                 for change in changes do 
@@ -55,7 +56,7 @@ let main argv =
                 // FIXME: This delay exists to workaround an IOException during
                 // reading of a .liquid (because Fake watcher presumably locks it)
                 Thread.Sleep(100)
-                generateOnce options.path
+                generateOnce(Liquid.Engine tmplPath, outputPath)
             )
             Thread.Sleep(Timeout.Infinite)
         0 // return an integer exit code
