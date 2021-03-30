@@ -45,21 +45,27 @@ let main argv =
     | :? Parsed<Options> as parsed -> 
         let options = parsed.Value
         let tmplPath = Path.Join(Path.GetFullPath options.path, "templates")
-        let outputPath = Path.Join(Path.GetFullPath options.path, "output")
-        let fp = new PhysicalFileProvider(tmplPath)
-        generateOnce(Liquid.Engine fp, outputPath)
-        if options.watch then
-            use w = new ObservableFileSystemWatcher(tmplPath)
-            w.Changed 
-            |> Observable.subscribe (fun evt -> 
-                match evt.ChangeType with 
-                | WatcherChangeTypes.Changed ->
-                    printfn "! %A" evt.Name
-                    generateOnce(Liquid.Engine fp, outputPath)
-                | _ -> ())
-            |> ignore
-            w.Start()
-            Thread.Sleep(Timeout.Infinite)
-        0 // return an integer exit code
+        match Directory.Exists(tmplPath) with 
+        | false ->
+            printfn $"Error: {tmplPath} does not exist"
+            2
+        | true ->
+            let outputPath = Path.Join(Path.GetFullPath options.path, "output")
+            Directory.CreateDirectory(outputPath) |> ignore
+            let fp = new PhysicalFileProvider(tmplPath)
+            generateOnce(Liquid.Engine fp, outputPath)
+            if options.watch then
+                use w = new ObservableFileSystemWatcher(tmplPath)
+                w.Changed 
+                |> Observable.subscribe (fun evt -> 
+                    match evt.ChangeType with 
+                    | WatcherChangeTypes.Changed ->
+                        printfn "! %A" evt.Name
+                        generateOnce(Liquid.Engine fp, outputPath)
+                    | _ -> ())
+                |> ignore
+                w.Start()
+                Thread.Sleep(Timeout.Infinite)
+            0 // return an integer exit code
     | _ ->
         1
