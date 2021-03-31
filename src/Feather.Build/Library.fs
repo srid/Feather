@@ -4,10 +4,42 @@ open System.IO
 open Fluid
 open Fluid.ViewEngine
 open Microsoft.Extensions.FileProviders
-open System.Threading
 open CommandLine
 open SJP.FsNotify
 open FSharp.Control.Reactive
+open Microsoft.Extensions.DependencyInjection
+open Microsoft.AspNetCore.Builder
+open Microsoft.AspNetCore.Hosting
+open Microsoft.Extensions.Hosting
+open Westwind.AspNetCore.LiveReload
+
+module Web =
+    // TODO: do it functional way
+    let configureServices (services: IServiceCollection) (fp: PhysicalFileProvider) =
+        services
+            .AddLiveReload(System.Action<LiveReloadConfiguration>(fun cfg ->
+                cfg.FolderToMonitor <- fp.Root
+            ))
+            |> ignore
+    let configureApp (app : IApplicationBuilder) (fp: IFileProvider) =
+        let opts = StaticFileOptions()
+        opts.FileProvider <-fp
+        app
+            .UseLiveReload()
+            .UseStaticFiles(opts)
+            |> ignore
+
+    let run (fp: PhysicalFileProvider) = 
+        Host.CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(
+                fun webHostBuilder ->
+                    webHostBuilder
+                        .UseWebRoot(fp.Root)
+                        .Configure(fun app -> configureApp app fp)
+                        .ConfigureServices(fun srv -> configureServices srv fp)
+                        |> ignore)
+            .Build()
+            .RunAsync()
 
 module Liquid = 
     let private mkEngineOpts(fp: IFileProvider) =
@@ -68,7 +100,10 @@ module CLI =
                             printfn "! %s" evt.Name
                             generateOnce(Liquid.Engine fp, x, outputPath))
                     watcher.Start()
-                    Thread.Sleep(Timeout.Infinite)
+                    use outputFp = new PhysicalFileProvider(outputPath)
+                    async {
+                        return! Web.run outputFp  |> Async.AwaitTask
+                    } |> Async.RunSynchronously
                     obs.Dispose()
                 0 // return an integer exit code
         | _ ->
