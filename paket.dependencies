@@ -8,3 +8,4 @@ nuget Fluid.ViewEngine 2.0.0-beta-1013
 nuget Microsoft.Extensions.FileProviders.Physical
 nuget SJP.FsNotify
 nuget FSharp.Control.Reactive
+nuget Westwind.AspnetCore.LiveReload

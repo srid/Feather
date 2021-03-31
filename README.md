@@ -35,12 +35,10 @@ The first priority is to get a non-pipeline based (i.e one-off) static site gene
 dotnet tool install
 dotnet paket restore
 
-# Terminal 1
 dotnet run -p ./src/Feather -- -w -C example
-
-# Terminal 2
-dotnet LiveReloadServer ./example/output
 ```
+
+The above command will launch a live server that reloads the browser view as your source files change.
 
 You can use `dotnet watch` (instead of `dotnet run`) to recompile and restart the tool on source change.
 
@@ -81,6 +79,6 @@ $FEATHER -w .
 - [x] Primitive file watcher that regenerates on source change
 - [x] Tailwind CSS support in .liquid files (via `twind/shim`)
 - [x] Finalize on a HTML template library ([#1](https://github.com/srid/Feather/issues/1))
+- [x] Add a dev server with live-reload
 - [ ] static/ files
 - [ ] Deploy something useful
-- [ ] Add a dev server with live-reload

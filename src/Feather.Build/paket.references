@@ -5,3 +5,4 @@ Microsoft.Extensions.FileProviders.Physical
 CommandLineParser
 SJP.FsNotify
 FSharp.Control.Reactive
+Westwind.AspnetCore.LiveReload

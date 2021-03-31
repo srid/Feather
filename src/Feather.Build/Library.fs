@@ -4,10 +4,55 @@ open System.IO
 open Fluid
 open Fluid.ViewEngine
 open Microsoft.Extensions.FileProviders
-open System.Threading
 open CommandLine
 open SJP.FsNotify
 open FSharp.Control.Reactive
+open Microsoft.Extensions.DependencyInjection
+open Microsoft.AspNetCore.Builder
+open Microsoft.AspNetCore.Hosting
+open Microsoft.Extensions.Hosting
+open Westwind.AspNetCore.LiveReload
+open Microsoft.Extensions.Logging
+
+/// A simple live reloading server
+module LiveReload =
+    let private configureServices (fp: PhysicalFileProvider) (services: IServiceCollection) =
+        services
+            .AddLiveReload(System.Action<LiveReloadConfiguration>(fun cfg ->
+                cfg.FolderToMonitor <- fp.Root
+            ))
+    let private mkStaticFileOptions(fp) =
+        let opts = StaticFileOptions()
+        opts.FileProvider <- fp
+        opts
+    let private configureApp (fp: IFileProvider) (app : IApplicationBuilder) =
+        app
+            .UseLiveReload()
+            .UseStaticFiles(mkStaticFileOptions fp)
+    let private configureLogging (builder: ILoggingBuilder) =
+        let filter (_provider: string) (category: string) (l : LogLevel) = 
+            not (
+                // Suppress verbose requesting logging from asp.net
+                category.Contains "Diagnostics"
+                || l < LogLevel.Information
+            )
+        builder
+            .AddFilter(filter) 
+            .AddConsole()
+    let private configureBuilder 
+        (fp: PhysicalFileProvider) 
+        (builder: IWebHostBuilder) : IWebHostBuilder =
+        builder
+            .UseWebRoot(fp.Root)
+            .Configure(configureApp fp >> ignore)
+            .ConfigureServices(configureServices fp >> ignore)
+            .ConfigureLogging(System.Action<ILoggingBuilder>(configureLogging >> ignore))
+    let run (fp: PhysicalFileProvider) = 
+        Host.CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(
+                System.Action<IWebHostBuilder>(configureBuilder fp >> ignore))
+            .Build()
+            .RunAsync()
 
 module Liquid = 
     let private mkEngineOpts(fp: IFileProvider) =
@@ -68,7 +113,10 @@ module CLI =
                             printfn "! %s" evt.Name
                             generateOnce(Liquid.Engine fp, x, outputPath))
                     watcher.Start()
-                    Thread.Sleep(Timeout.Infinite)
+                    use outputFp = new PhysicalFileProvider(outputPath)
+                    async {
+                        return! LiveReload.run outputFp  |> Async.AwaitTask
+                    } |> Async.RunSynchronously
                     obs.Dispose()
                 0 // return an integer exit code
         | _ ->
