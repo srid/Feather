@@ -14,30 +14,30 @@ open Microsoft.Extensions.Hosting
 open Westwind.AspNetCore.LiveReload
 
 module Web =
-    // TODO: do it functional way
-    let configureServices (services: IServiceCollection) (fp: PhysicalFileProvider) =
+    let private configureServices (fp: PhysicalFileProvider) (services: IServiceCollection) =
         services
             .AddLiveReload(System.Action<LiveReloadConfiguration>(fun cfg ->
                 cfg.FolderToMonitor <- fp.Root
             ))
-            |> ignore
-    let configureApp (app : IApplicationBuilder) (fp: IFileProvider) =
+    let private mkStaticFileOptions(fp) =
         let opts = StaticFileOptions()
-        opts.FileProvider <-fp
+        opts.FileProvider <- fp
+        opts
+    let private configureApp (fp: IFileProvider) (app : IApplicationBuilder) =
         app
             .UseLiveReload()
-            .UseStaticFiles(opts)
-            |> ignore
-
+            .UseStaticFiles(mkStaticFileOptions fp)
+    let private configureBuilder 
+        (fp: PhysicalFileProvider) 
+        (builder: IWebHostBuilder) : IWebHostBuilder =
+        builder
+            .UseWebRoot(fp.Root)
+            .Configure(configureApp fp >> ignore)
+            .ConfigureServices(configureServices fp >> ignore)
     let run (fp: PhysicalFileProvider) = 
         Host.CreateDefaultBuilder()
             .ConfigureWebHostDefaults(
-                fun webHostBuilder ->
-                    webHostBuilder
-                        .UseWebRoot(fp.Root)
-                        .Configure(fun app -> configureApp app fp)
-                        .ConfigureServices(fun srv -> configureServices srv fp)
-                        |> ignore)
+                System.Action<IWebHostBuilder>(configureBuilder fp >> ignore))
             .Build()
             .RunAsync()
 
