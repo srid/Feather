@@ -1,21 +1,18 @@
 ﻿namespace Feather.Build
 
 open System.IO
-open Fluid
-open Fluid.ViewEngine
 open Microsoft.Extensions.FileProviders
-open CommandLine
-open SJP.FsNotify
 open FSharp.Control.Reactive
-open Microsoft.Extensions.DependencyInjection
-open Microsoft.AspNetCore.Builder
-open Microsoft.AspNetCore.Hosting
-open Microsoft.Extensions.Hosting
-open Westwind.AspNetCore.LiveReload
-open Microsoft.Extensions.Logging
 
 /// A simple live reloading server
 module LiveReload =
+    open Westwind.AspNetCore.LiveReload
+    open Microsoft.Extensions.DependencyInjection
+    open Microsoft.AspNetCore.Builder
+    open Microsoft.AspNetCore.Hosting
+    open Microsoft.Extensions.Hosting
+    open Microsoft.Extensions.Logging
+
     let private configureServices (fp: PhysicalFileProvider) (services: IServiceCollection) =
         services
             .AddLiveReload(System.Action<LiveReloadConfiguration>(fun cfg ->
@@ -47,6 +44,8 @@ module LiveReload =
             .Configure(configureApp fp >> ignore)
             .ConfigureServices(configureServices fp >> ignore)
             .ConfigureLogging(System.Action<ILoggingBuilder>(configureLogging >> ignore))
+            // This selects a free port.
+            .UseUrls("http://127.0.0.1:0")
     let run (fp: PhysicalFileProvider) = 
         Host.CreateDefaultBuilder()
             .ConfigureWebHostDefaults(
@@ -55,6 +54,9 @@ module LiveReload =
             .RunAsync()
 
 module Liquid = 
+    open Fluid
+    open Fluid.ViewEngine
+
     let private mkEngineOpts(fp: IFileProvider) =
         let opts = FluidViewEngineOptions()
         do 
@@ -75,6 +77,8 @@ module Liquid =
             x.ToString()
 
 module CLI =
+    open CommandLine
+    open SJP.FsNotify
     type Options = {
         [<Option('w', "watch", Default = false, HelpText = "Watch for template changes")>]
         watch : bool
