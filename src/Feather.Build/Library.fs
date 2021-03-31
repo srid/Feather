@@ -18,14 +18,20 @@ module LiveReload =
             .AddLiveReload(System.Action<LiveReloadConfiguration>(fun cfg ->
                 cfg.FolderToMonitor <- fp.Root
             ))
+            .AddDirectoryBrowser()
     let private mkStaticFileOptions(fp) =
         let opts = StaticFileOptions()
         opts.FileProvider <- fp
+        opts
+    let private mkDirectoryBrowserOptions(fp) =
+        let opts = DirectoryBrowserOptions()
+        opts.FileProvider <- fp 
         opts
     let private configureApp (fp: IFileProvider) (app : IApplicationBuilder) =
         app
             .UseLiveReload()
             .UseStaticFiles(mkStaticFileOptions fp)
+            .UseDirectoryBrowser(mkDirectoryBrowserOptions fp)
     let private configureLogging (builder: ILoggingBuilder) =
         let filter (_provider: string) (category: string) (l : LogLevel) = 
             not (
