@@ -12,8 +12,10 @@ open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
 open Westwind.AspNetCore.LiveReload
+open Microsoft.Extensions.Logging
 
-module Web =
+/// A simple live reloading server
+module LiveReload =
     let private configureServices (fp: PhysicalFileProvider) (services: IServiceCollection) =
         services
             .AddLiveReload(System.Action<LiveReloadConfiguration>(fun cfg ->
@@ -27,6 +29,16 @@ module Web =
         app
             .UseLiveReload()
             .UseStaticFiles(mkStaticFileOptions fp)
+    let private configureLogging (builder: ILoggingBuilder) =
+        let filter (_provider: string) (category: string) (l : LogLevel) = 
+            not (
+                // Suppress verbose requesting logging from asp.net
+                category.Contains "Diagnostics"
+                || l < LogLevel.Information
+            )
+        builder
+            .AddFilter(filter) 
+            .AddConsole()
     let private configureBuilder 
         (fp: PhysicalFileProvider) 
         (builder: IWebHostBuilder) : IWebHostBuilder =
@@ -34,6 +46,7 @@ module Web =
             .UseWebRoot(fp.Root)
             .Configure(configureApp fp >> ignore)
             .ConfigureServices(configureServices fp >> ignore)
+            .ConfigureLogging(System.Action<ILoggingBuilder>(configureLogging >> ignore))
     let run (fp: PhysicalFileProvider) = 
         Host.CreateDefaultBuilder()
             .ConfigureWebHostDefaults(
@@ -102,7 +115,7 @@ module CLI =
                     watcher.Start()
                     use outputFp = new PhysicalFileProvider(outputPath)
                     async {
-                        return! Web.run outputFp  |> Async.AwaitTask
+                        return! LiveReload.run outputFp  |> Async.AwaitTask
                     } |> Async.RunSynchronously
                     obs.Dispose()
                 0 // return an integer exit code
