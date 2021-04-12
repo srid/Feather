@@ -32,7 +32,7 @@ The first priority is to get a non-pipeline based (i.e one-off) static site gene
 ## Hacking
 
 ```shell
-dotnet tool install
+dotnet tool restore
 dotnet paket restore
 
 dotnet run -p ./src/Feather -- -w -C example
