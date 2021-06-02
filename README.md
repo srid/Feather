@@ -2,7 +2,7 @@
 
 # Feather
 
-**NOTE**: Feather development has ceased, superceded by [Ema](https://ema.srid.ca/) in Haskell.
+**NOTE**: Feather development has ceased, superceded by [Ema](https://ema.srid.ca/) in Haskell, as well as [Emanote](https://github.com/srid/emanote).
 
 Feather is a work-in-progress **static site generator & previewer** with customizable pipeline and live-reload. It is currently in research & prototype phase, to explore the possibility of two related but very different use-cases:
 
